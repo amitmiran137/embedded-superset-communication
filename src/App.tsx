@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import './App.css';
+import {SUPERSET_FRAME_NAME, supersetUrl} from "./common/supersetContants";
+import {sendMessageToSuperset} from "./common/messages";
+import {useMessageEventHandler} from "./hooks/useMessageEventHandler";
 
 
 const Wrapper = styled.div`
@@ -26,6 +29,15 @@ const Input = styled.input`
   border: none;
   border-radius: 3px;
 `;
+const Button = styled.button`
+  font-size: 1em;
+  margin: 1em;
+  padding: 0.25em 1em;
+  border: 2px solid palevioletred;
+  border-radius: 3px;
+`
+
+
 const EmbeddedIframe = styled.iframe`
   // 48px is the height of the dropdowns + the margin bottom it has
   height: calc(100% - 48px);
@@ -35,21 +47,28 @@ const EmbeddedIframe = styled.iframe`
   left: 0;
 `
 
-export const SUPERSET_FRAME_NAME = 'supersetFrame'
-
-export const supersetUrl =
-    // @ts-ignore
-    // eslint-disable-next-line camelcase
-    'http://localhost:8088'
 
 const id_or_slug=4
 
 function App() {
+    const handleMessage =
+        (event: MessageEvent) => {
+            console.log(event)
+        }
+
+    useMessageEventHandler(handleMessage)
+
+    const handleClick = ({  }) => {
+        sendMessageToSuperset(
+            {type:"hello"}
+        )
+    }
+
     return (
         <Wrapper>
             <InputWrapper>
-            <Input
-            />
+            <Input/>
+            <Button onClick={handleClick}/>
             </InputWrapper>
             <EmbeddedIframe
                 name={SUPERSET_FRAME_NAME}
