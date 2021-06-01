@@ -1,9 +1,10 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import './App.css';
 import {SUPERSET_FRAME_NAME, supersetUrl} from "./common/supersetContants";
 import {sendMessageToSuperset} from "./common/messages";
 import {useMessageEventHandler} from "./hooks/useMessageEventHandler";
+import {SDK_TYPES} from "./common/types";
 
 
 const Wrapper = styled.div`
@@ -51,6 +52,7 @@ const EmbeddedIframe = styled.iframe`
 const id_or_slug=4
 
 function App() {
+    const [value,setValue] = useState('Iron and Steel')
     const handleMessage =
         (event: MessageEvent) => {
             console.log(event)
@@ -58,16 +60,24 @@ function App() {
 
     useMessageEventHandler(handleMessage)
 
-    const handleClick = ({  }) => {
+    const handleClick = ({}) => {
         sendMessageToSuperset(
-            {type:"hello"}
+            {
+                type: SDK_TYPES.ALL,
+                data: [{
+                    col: "source",
+                    op: 'IN',
+                    val: value,
+                }]
+            }
         )
     }
 
     return (
+
         <Wrapper>
             <InputWrapper>
-            <Input/>
+                <Input value={value} onChange={e => setValue(e.target.value)}/>
             <Button onClick={handleClick}/>
             </InputWrapper>
             <EmbeddedIframe
